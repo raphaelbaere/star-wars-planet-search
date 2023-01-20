@@ -1,29 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import './App.css';
+import SearchInput from './components/SearchInput';
 import Table from './components/Table';
-import PlanetsContext from './context/PlanetsContext';
-import usePlanets from './hooks/usePlanets';
+import PlanetsProvider from './context/PlanetsProvider';
 
 function App() {
-  const { isLoading, errors, makeFetch } = usePlanets();
-  const [planets, setPlanets] = useState([]);
-
-  useEffect(() => {
-    const getPlanets = async (url) => {
-      const planetsAPI = await makeFetch(url);
-      setPlanets(planetsAPI);
-    };
-    getPlanets('https://swapi.dev/api/planets');
-  }, []);
-  const values = useMemo(() => ({
-    planets, isLoading, errors,
-  }), [planets, isLoading, errors]);
   return (
     <div>
       <h1>Projeto Star Wars - Trybe</h1>
-      <PlanetsContext.Provider value={ { values } }>
+      <PlanetsProvider>
+        <SearchInput />
         <Table />
-      </PlanetsContext.Provider>
+      </PlanetsProvider>
     </div>
   );
 }
