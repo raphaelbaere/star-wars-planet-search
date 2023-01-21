@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { getByAltText, getByRole, getByText, render, screen, waitFor } from '@testing-library/react';
 import App from '../App';
 import userEvent from '@testing-library/user-event';
 
@@ -250,7 +250,7 @@ describe('Acessa o app e testa..', () => {
       json: jest.fn().mockResolvedValue(planetsData)
     })
   });
-  test('Se a tabela se encontra na rota "/" e é possível filtrá-la pela barra de pesquisa nominal.', async () => {
+  test('Se a tabela se encontra na rota "/" e é possível filtrá-la pela barra de pesquisa nominal, numérica e ordenar.', async () => {
     await waitFor(() => {
       expect(screen.getAllByTestId('planet-name')[0]).toBeInTheDocument();
     }, { timeout: 4000 });
@@ -271,5 +271,47 @@ describe('Acessa o app e testa..', () => {
     userEvent.click(buttonFilter);
     const planetsEl = await screen.findAllByTestId('planet-name');
     expect(planetsEl[0]).toHaveTextContent('Hoth');
+    userEvent.clear(valueFilter);
+    
+    userEvent.selectOptions(columnFilter, 'population');
+    userEvent.type(valueFilter, '100');
+    userEvent.selectOptions(operatorFilter, 'maior que');
+    userEvent.click(buttonFilter);
+    const planetsEl50 = await screen.findAllByTestId('planet-name');
+    expect(planetsEl50[0]).toHaveTextContent('Endor');
+    const buttonRemoveSingular = await screen.findByTestId('remove-filter1');
+    userEvent.click(buttonRemoveSingular);
+    const planetsEl90 = await screen.findAllByTestId('planet-name');
+    expect(planetsEl90[0]).toHaveTextContent('Hoth')
+
+    const removeFilters = await screen.findByTestId('button-remove-filters');
+    const removeFilterSingular = await screen.findByTestId('remove-filter0');
+    userEvent.click(removeFilterSingular);
+    userEvent.click(removeFilters);
+    const planetsEl2 = await screen.findAllByTestId('planet-name');
+    expect(planetsEl2[0]).toBeInTheDocument();
+
+    const columnSort = await screen.findByTestId('column-sort');
+    userEvent.selectOptions(columnSort, 'population');
+    const inputAsc = await screen.findByTestId('column-sort-input-asc');
+    userEvent.click(inputAsc);
+    const sortButton = await screen.findByTestId('column-sort-button');
+    userEvent.click(sortButton);
+    const planetsEl3 = await screen.findAllByTestId('planet-name');
+    expect(planetsEl3[0]).toHaveTextContent('Yavin IV');
+
+    const removeFilters2 = await screen.findByTestId('button-remove-filters');
+    userEvent.click(removeFilters2);
+    const planetsEl4 = await screen.findAllByTestId('planet-name');
+    expect(planetsEl4[0]).toBeInTheDocument();
+
+    const columnSort2 = await screen.findByTestId('column-sort');
+    userEvent.selectOptions(columnSort2, 'population');
+    const inputDesc = await screen.findByTestId('column-sort-input-desc');
+    userEvent.click(inputDesc);
+    const sortButton2 = await screen.findByTestId('column-sort-button');
+    userEvent.click(sortButton2);
+    const planetsEl5 = await screen.findAllByTestId('planet-name');
+    expect(planetsEl5[0]).toHaveTextContent('Coruscant');
   });
 })

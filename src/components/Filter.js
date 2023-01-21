@@ -22,6 +22,7 @@ export default function Filter() {
       </p>
       <button
         type="button"
+        data-testid={ `remove-filter${index}` }
         onClick={ () => { filterRemoveButtonClick(filter.searchColumn); } }
       >
         Remover
