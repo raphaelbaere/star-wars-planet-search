@@ -1,8 +1,6 @@
-import { useContext, useState } from 'react';
-import PlanetsContext from '../context/PlanetsContext';
+import { useState } from 'react';
 
 export default function usePlanet() {
-  const { planets } = useContext(PlanetsContext);
   const [search, setSearch] = useState('');
 
   const onInputChange = ({ target }) => {

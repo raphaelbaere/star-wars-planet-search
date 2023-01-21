@@ -2,7 +2,12 @@ import React, { useContext } from 'react';
 import PlanetsContext from '../context/PlanetsContext';
 
 export default function SearchColumn() {
-  const { values: { searchColumn, onSelectChange } } = useContext(PlanetsContext);
+  const { values: { searchColumn, onSelectChange,
+    arrayOptions } } = useContext(PlanetsContext);
+
+  const showOptions = () => arrayOptions.map((option, index) => (
+    <option key={ index } value={ option }>{option}</option>
+  ));
   return (
     <label htmlFor="planet-filter-select">
       Coluna
@@ -13,11 +18,7 @@ export default function SearchColumn() {
         value={ searchColumn }
         onChange={ onSelectChange }
       >
-        <option value="population">population</option>
-        <option value="orbital_period">orbital_period</option>
-        <option value="diameter">diameter</option>
-        <option value="rotation_period">rotation_period</option>
-        <option value="surface_water">surface_water</option>
+        {showOptions()}
       </select>
     </label>
   );

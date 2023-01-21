@@ -4,13 +4,16 @@ import usePlanets from '../hooks/usePlanets';
 import PlanetsContext from './PlanetsContext';
 
 function PlanetsProvider({ children }) {
+  const optionsArray = ['population', 'orbital_period',
+    'diameter', 'rotation_period', 'surface_water'];
   const { isLoading, errors, makeFetch } = usePlanets();
   const [planets, setPlanets] = useState([]);
   const [search, setSearch] = useState('');
   const [originalPlanets, setOriginalPlanets] = useState([]);
-  const [searchColumn, setSearchColumn] = useState('population');
   const [comparisonFilter, setComparisonFilter] = useState('maior que');
   const [valueFilter, setValueFilter] = useState('0');
+  const [arrayOptions, setArrayOptions] = useState(optionsArray);
+  const [searchColumn, setSearchColumn] = useState(arrayOptions[0]);
 
   const onValueFilterChange = ({ target: { value } }) => {
     setValueFilter(value);
@@ -56,17 +59,28 @@ function PlanetsProvider({ children }) {
     return planetsFiltered;
   };
 
+  const filterArrayOptions = () => {
+    const optionsFiltered = arrayOptions.filter((option) => (
+      option !== searchColumn
+    ));
+    setArrayOptions(optionsFiltered);
+    setSearchColumn(optionsFiltered[0]);
+  };
+
   const onFilterButtonClick = () => {
     if (valueFilter) {
       switch (comparisonFilter) {
       case 'maior que':
         setPlanets(filterPlanetsBiggerThan());
+        filterArrayOptions();
         break;
       case 'menor que':
         setPlanets(filterPlanetsLessThan());
+        filterArrayOptions();
         break;
       case 'igual a':
         setPlanets(filterPlanetsEquals());
+        filterArrayOptions();
         break;
       default:
         break;
@@ -95,7 +109,9 @@ function PlanetsProvider({ children }) {
     valueFilter,
     onValueFilterChange,
     onFilterButtonClick,
-  }), [planets, isLoading, errors, search, searchColumn, comparisonFilter, valueFilter]);
+    arrayOptions,
+  }), [planets, isLoading, errors, search, searchColumn,
+    comparisonFilter, valueFilter, arrayOptions]);
   return (
     <PlanetsContext.Provider
       value={ { values } }
