@@ -6,6 +6,7 @@ import PlanetsContext from './PlanetsContext';
 function PlanetsProvider({ children }) {
   const optionsArray = ['population', 'orbital_period',
     'diameter', 'rotation_period', 'surface_water'];
+
   const { isLoading, errors, makeFetch } = usePlanets();
   const [planets, setPlanets] = useState([]);
   const [search, setSearch] = useState('');
@@ -14,6 +15,7 @@ function PlanetsProvider({ children }) {
   const [valueFilter, setValueFilter] = useState('0');
   const [arrayOptions, setArrayOptions] = useState(optionsArray);
   const [searchColumn, setSearchColumn] = useState(arrayOptions[0]);
+  const [arrayOfFilters, setArrayOfFilters] = useState([]);
 
   const onValueFilterChange = ({ target: { value } }) => {
     setValueFilter(value);
@@ -38,21 +40,40 @@ function PlanetsProvider({ children }) {
     setSearchColumn(value);
   };
 
-  const filterPlanetsBiggerThan = () => {
+  const filterPlanetsBiggerThan = (column, value) => {
+    if (column && value) {
+      const planetsFiltered = originalPlanets.filter((planet) => (
+        +planet[column] > +value
+      ));
+      setPlanets(planetsFiltered);
+      return planetsFiltered;
+    }
     const planetsFiltered = planets.filter((planet) => (
       +planet[searchColumn] > +valueFilter
     ));
     return planetsFiltered;
   };
 
-  const filterPlanetsLessThan = () => {
+  const filterPlanetsLessThan = (column, value) => {
+    if (column && value) {
+      const planetsFiltered = originalPlanets.filter((planet) => (
+        +planet[column] < +value
+      ));
+      return planetsFiltered;
+    }
     const planetsFiltered = planets.filter((planet) => (
       +planet[searchColumn] < +valueFilter
     ));
     return planetsFiltered;
   };
 
-  const filterPlanetsEquals = () => {
+  const filterPlanetsEquals = (column, value) => {
+    if (column && value) {
+      const planetsFiltered = originalPlanets.filter((planet) => (
+        +planet[column] === +value
+      ));
+      return planetsFiltered;
+    }
     const planetsFiltered = planets.filter((planet) => (
       +planet[searchColumn] === +valueFilter
     ));
@@ -67,7 +88,53 @@ function PlanetsProvider({ children }) {
     setSearchColumn(optionsFiltered[0]);
   };
 
+  const refilter = (comparison, value, column) => {
+    if (value) {
+      switch (comparison) {
+      case 'maior que':
+        setPlanets(filterPlanetsBiggerThan(column, value));
+        break;
+      case 'menor que':
+        setPlanets(filterPlanetsLessThan(column, value));
+        break;
+      case 'igual a':
+        setPlanets(filterPlanetsEquals(column, value));
+        break;
+      default:
+        break;
+      }
+    }
+  };
+
+  const removeAllFilters = () => {
+    setPlanets(originalPlanets);
+    setArrayOfFilters([]);
+    setArrayOptions(optionsArray);
+  };
+
+  const filterRemoveButtonClick = (coluna) => {
+    const filtersFiltered = arrayOfFilters.filter((filter) => (
+      filter.searchColumn !== coluna
+    ));
+    setArrayOfFilters(filtersFiltered);
+    setArrayOptions([...arrayOptions, coluna]);
+    if (filtersFiltered.length === 0) {
+      setPlanets(originalPlanets);
+      return;
+    }
+    filtersFiltered.forEach((filter) => {
+      refilter(filter.comparisonFilter, filter.valueFilter, filter.searchColumn);
+    });
+  };
+
   const onFilterButtonClick = () => {
+    const filterObject = {
+      comparisonFilter,
+      valueFilter,
+      searchColumn,
+    };
+
+    setArrayOfFilters([...arrayOfFilters, filterObject]);
     if (valueFilter) {
       switch (comparisonFilter) {
       case 'maior que':
@@ -110,8 +177,11 @@ function PlanetsProvider({ children }) {
     onValueFilterChange,
     onFilterButtonClick,
     arrayOptions,
+    arrayOfFilters,
+    filterRemoveButtonClick,
+    removeAllFilters,
   }), [planets, isLoading, errors, search, searchColumn,
-    comparisonFilter, valueFilter, arrayOptions]);
+    comparisonFilter, valueFilter, arrayOptions, arrayOfFilters]);
   return (
     <PlanetsContext.Provider
       value={ { values } }

@@ -6,7 +6,28 @@ import SearchInput from './SearchInput';
 import ValueFilter from './ValueFilter';
 
 export default function Filter() {
-  const { values: { onFilterButtonClick } } = useContext(PlanetsContext);
+  const { values: { onFilterButtonClick,
+    arrayOfFilters, filterRemoveButtonClick,
+    removeAllFilters } } = useContext(PlanetsContext);
+
+  const showArrayOfFilters = () => arrayOfFilters.map((filter, index) => (
+    <div
+      key={ index }
+      data-testid="filter"
+    >
+      <p>
+        {filter.searchColumn}
+        {filter.valueFilter}
+        {filter.comparisonFilter}
+      </p>
+      <button
+        type="button"
+        onClick={ () => { filterRemoveButtonClick(filter.searchColumn); } }
+      >
+        Remover
+      </button>
+    </div>
+  ));
   return (
     <div>
       <SearchInput />
@@ -19,6 +40,14 @@ export default function Filter() {
         onClick={ onFilterButtonClick }
       >
         Filtrar
+      </button>
+      {showArrayOfFilters()}
+      <button
+        data-testid="button-remove-filters"
+        type="button"
+        onClick={ removeAllFilters }
+      >
+        Remover todas filtragens
       </button>
     </div>
   );
