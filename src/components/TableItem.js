@@ -5,7 +5,7 @@ export default function TableItem(props) {
   const { planetInfos } = props;
   const planetValues = Object.values(planetInfos);
   const createPlanetTD = (infos) => infos.map((info, index) => (
-    <td key={ index }>
+    <td data-testid={ index === 0 ? 'planet-name' : '' } key={ index }>
       {info}
     </td>
   ));

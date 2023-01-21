@@ -16,6 +16,8 @@ function PlanetsProvider({ children }) {
   const [arrayOptions, setArrayOptions] = useState(optionsArray);
   const [searchColumn, setSearchColumn] = useState(arrayOptions[0]);
   const [arrayOfFilters, setArrayOfFilters] = useState([]);
+  const [sortOrder, setSortOrder] = useState({ order:
+     { column: 'population', sort: 'ASC' } });
 
   const onValueFilterChange = ({ target: { value } }) => {
     setValueFilter(value);
@@ -30,6 +32,15 @@ function PlanetsProvider({ children }) {
     } else {
       setPlanets(originalPlanets);
     }
+  };
+
+  const onSortSelectChange = ({ target: { value } }) => {
+    setSortOrder({
+      order: {
+        ...sortOrder.order,
+        column: value,
+      },
+    });
   };
 
   const onSelectChange = ({ target: { value } }, optional) => {
@@ -155,6 +166,41 @@ function PlanetsProvider({ children }) {
     }
   };
 
+  const onSortButtonClick = () => {
+    const { order: { column, sort } } = sortOrder;
+    const planetsSort = planets.sort((planetA, planetB) => {
+      const numA = +planetA[column];
+      const numB = +planetB[column];
+      const AFTER = 1;
+      const BEFORE = -1;
+      if (planetA[column] === 'unknown') {
+        return AFTER;
+      }
+      if (planetB[column] === 'unknown') {
+        return BEFORE;
+      }
+      if (sort === 'ASC') return numA - numB;
+      return numB - numA;
+    });
+    setSortOrder({
+      order: {
+        ...sortOrder.order,
+        sort,
+      },
+    });
+    setPlanets(planetsSort);
+  };
+
+  const onInputSortChange = ({ target }) => {
+    const { value } = target;
+    setSortOrder({
+      order: {
+        ...sortOrder.order,
+        sort: value,
+      },
+    });
+  };
+
   useEffect(() => {
     const getPlanets = async (url) => {
       const planetsAPI = await makeFetch(url);
@@ -180,8 +226,14 @@ function PlanetsProvider({ children }) {
     arrayOfFilters,
     filterRemoveButtonClick,
     removeAllFilters,
+    optionsArray,
+    onSortButtonClick,
+    onInputSortChange,
+    onSortSelectChange,
+    sortOrder,
   }), [planets, isLoading, errors, search, searchColumn,
-    comparisonFilter, valueFilter, arrayOptions, arrayOfFilters]);
+    comparisonFilter, valueFilter, arrayOptions, arrayOfFilters,
+    sortOrder]);
   return (
     <PlanetsContext.Provider
       value={ { values } }
