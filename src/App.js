@@ -7,12 +7,14 @@ import Sort from './components/Sort';
 
 function App() {
   return (
-    <div>
-      <h1>Projeto Star Wars - Trybe</h1>
+    <div className="background">
       <PlanetsProvider>
-        <Filter />
-        <Sort />
-        <Table />
+        <main className="main-content">
+          <h1>Projeto Star Wars - Trybe</h1>
+          <Filter />
+          <Sort />
+          <Table />
+        </main>
       </PlanetsProvider>
     </div>
   );

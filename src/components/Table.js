@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import PlanetsContext from '../context/PlanetsContext';
 import TableItem from './TableItem';
+import '../App.css';
 
 export default function Table() {
   const { values: { isLoading, planets, errors } } = useContext(PlanetsContext);
@@ -15,7 +16,7 @@ export default function Table() {
   };
 
   return (
-    <div>
+    <div className="table">
       {isLoading ? <p>Carregando</p> : ''}
       {errors ? <p>{errors}</p> : ''}
       <table>

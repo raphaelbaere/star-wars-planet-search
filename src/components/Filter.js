@@ -4,6 +4,7 @@ import ComparisonFilter from './ComparisonFilter';
 import SearchColumn from './SearchColumn';
 import SearchInput from './SearchInput';
 import ValueFilter from './ValueFilter';
+import '../App.css';
 
 export default function Filter() {
   const { values: { onFilterButtonClick,
@@ -30,7 +31,7 @@ export default function Filter() {
     </div>
   ));
   return (
-    <div>
+    <div className="filter">
       <SearchInput />
       <SearchColumn />
       <ComparisonFilter />

@@ -14,6 +14,68 @@
   }
 }
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.main-content {
+  width: 80%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: white;
+}
+
+.background {
+  background: black; /* dark color for space */
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.background h1 {
+  color: black;
+  text-align: center;
+}
+
+.planet {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px; /* creates circular shape */
+  background: #fff; /* white color for planet */
+  position: absolute; /* allows for positioning within the background container */
+  animation: orbit 5s infinite; /* applies orbit animation and repeats indefinitely */
+}
+
+@keyframes orbit {
+  /* animation keyframes */
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg);
+  }
+}
+
+.table {
+  color: black;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+.filter {
+  color: black;
+}
+
+.sort {
+  color: black;
+}
+
 .App-header {
   align-items: center;
   background-color: #282c34;

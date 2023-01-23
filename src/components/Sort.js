@@ -2,11 +2,12 @@ import { useContext } from 'react';
 import PlanetsContext from '../context/PlanetsContext';
 import ColumnSort from './ColumnSort';
 import SortInputs from './SortInputs';
+import '../App.css';
 
 export default function Sort() {
   const { values: { onSortButtonClick } } = useContext(PlanetsContext);
   return (
-    <div>
+    <div className="sort">
       <ColumnSort />
       <SortInputs />
       <button
